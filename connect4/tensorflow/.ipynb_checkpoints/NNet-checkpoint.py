@@ -9,8 +9,7 @@ sys.path.append('../../')
 from utils import *
 from NeuralNet import NeuralNet
 
-import tensorflow 
-tf = tensorflow.compat.v1
+import tensorflow as tf
 from .Connect4NNet import Connect4NNet as onnet
 
 args = dotdict({
@@ -23,7 +22,7 @@ args = dotdict({
 
 
 ## Code based on othello.NNetWrapper with minimal changes.
-tf.disable_v2_behavior()
+
 class NNetWrapper(NeuralNet):
     def __init__(self, game):
         self.nnet = onnet(game, args)

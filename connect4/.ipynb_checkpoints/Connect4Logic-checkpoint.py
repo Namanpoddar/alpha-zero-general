@@ -75,7 +75,7 @@ class Board():
         """Checks if player_pieces contains a vertical or horizontal win."""
         run_lengths = [player_pieces[:, i:i + self.win_length].sum(axis=1)
                        for i in range(len(player_pieces) - self.win_length + 2)]
-        return max([x.max() for x in run_lengths], default=0) >= self.win_length
+        return max([x.max() for x in run_lengths]) >= self.win_length
 
     def __str__(self):
         return str(self.np_pieces)

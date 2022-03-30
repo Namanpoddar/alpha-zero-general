@@ -2,9 +2,12 @@ import sys
 sys.path.append('..')
 from utils import *
 
-import tensorflow 
-tf = tensorflow.compat.v1
+import tensorflow.compat.v1 as tf
 tf.disable_v2_behavior()
+
+## Code based on OthelloNNet with minimal changes.
+
+
 class Connect4NNet():
     def __init__(self, game, args):
         # game params

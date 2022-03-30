@@ -3,11 +3,13 @@ sys.path.append('..')
 from utils import *
 
 import argparse
-from tensorflow import *
-from keras.models import *
-from keras.layers import *
-from keras.activations import *
-
+from tensorflow.keras.models import *
+from tensorflow.keras.layers import *
+from tensorflow.keras.optimizers import Adam
+from tensorflow.keras.activations import *
+import tensorflow.compat.v1 as tf
+tf.disable_v2_behavior()
+tf.compat.v1.disable_eager_execution()
 def relu_bn(inputs):
     relu1 = relu(inputs)
     bn = BatchNormalization()(relu1)
@@ -82,16 +84,16 @@ class Connect4NNet():
 
         self.pi = Dense(self.action_size, activation='softmax', name='pi')(policy_head(t))
         self.v = Dense(1, activation='tanh', name='v')(value_head(t))
-	    
+        
         self.calculate_loss()
+
         self.model = Model(inputs=self.input_boards, outputs=[self.pi, self.v])
-        opt = keras.optimizers.Adam(learning_rate=args.lr)
-        self.model.compile(loss=[self.loss_pi ,self.loss_v], optimizer=opt)
+        self.model.compile(loss=[self.loss_pi ,self.loss_v], optimizer=Adam(args.lr))
 
     def calculate_loss(self):
-        self.target_pis = keras.Input(shape=[None, self.action_size])
-        self.target_vs =  keras.Input(shape=[None])
-        self.loss_pi =  tf.keras.losses.CategoricalCrossentropy(self.target_pis, self.pi)
+        self.target_pis = tf.placeholder(tf.float32, shape=[None, self.action_size])
+        self.target_vs = tf.placeholder(tf.float32, shape=[None])
+        self.loss_pi =  tf.losses.softmax_cross_entropy(self.target_pis, self.pi)
         self.loss_v = tf.losses.mean_squared_error(self.target_vs, tf.reshape(self.v, shape=[-1,]))
         self.total_loss = self.loss_pi + self.loss_v
         update_ops = tf.get_collection(tf.GraphKeys.UPDATE_OPS)

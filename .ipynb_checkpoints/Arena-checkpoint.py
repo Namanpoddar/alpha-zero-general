@@ -43,12 +43,14 @@ class Arena():
         it = 0
         while self.game.getGameEnded(board, curPlayer) == 0:
             it += 1
-            # if verbose:
-            #     assert self.display
-            #     print("Turn ", str(it), "Player ", str(curPlayer))
-            #     self.display(board)
+            if verbose:
+                assert self.display
+                print("Turn ", str(it), "Player ", str(curPlayer))
+                self.display(board)
             action = players[curPlayer + 1](self.game.getCanonicalForm(board, curPlayer))
+
             valids = self.game.getValidMoves(self.game.getCanonicalForm(board, curPlayer), 1)
+
             if valids[action] == 0:
                 log.error(f'Action {action} is not valid!')
                 log.debug(f'valids = {valids}')
@@ -60,7 +62,7 @@ class Arena():
             self.display(board)
         return curPlayer * self.game.getGameEnded(board, curPlayer)
 
-    def playGames(self, num, verbose=True):
+    def playGames(self, num, verbose=False):
         """
         Plays num games in which player1 starts num/2 games and player2 starts
         num/2 games.
